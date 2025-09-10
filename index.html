@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashval Writer's Suite ✍️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PWS4TPN8');</script>
+    <!-- End Google Tag Manager -->
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+      
+      :root {
+          --primary: #5D5CDE;
+          --primary-dark: #4A49B8;
+          --primary-light: #7E7DE6;
+          --secondary: #38B2AC;
+          --accent-color: #FF9F5A; /* Renamed to avoid conflict with tailwind 'accent' */
+          --success: #7BE495;
+          --warning: #FFD166;
+          --danger: #FF6B6B;
+          --dark-bg-color: #181818; /* Renamed */
+          --dark-card-color: #2A2A2A; /* Renamed */
+          --dark-accent-var: #3A3A3A; /* Renamed and clarified variable name */
+          --light-bg-color: #F8FAFC; /* Renamed */
+          --light-card-color: #FFFFFF; /* Renamed */
+          --light-accent-var: #F1F5F9; /* Renamed and clarified variable name */
+
+          /* Mascot specific theme vars (can be overridden by AppTheme in React) */
+          --mascot-bubble-bg: rgba(255,255,255,0.95);
+          --mascot-bubble-text: #374151;
+          --mascot-bubble-arrow-border: rgba(255,255,255,0.94);
+      }
+
+      body {
+        font-family: 'Sarabun', sans-serif;
+        background-color: var(--light-bg-color);
+        color: #374151; /* From new */
+        transition: background-color 0.3s, color 0.3s; /* Added color transition */
+        overflow-x: hidden; /* From new */
+        margin: 0; /* From old */
+      }
+
+      .dark body { /* From new, slightly adapted */
+          background-color: var(--dark-bg-color);
+          color: #E5E7EB;
+      }
+      
+      .dark { /* For mascot bubble theming */
+        --mascot-bubble-bg: rgba(30, 30, 40, 0.95);
+        --mascot-bubble-text: #E5E7EB;
+        --mascot-bubble-arrow-border: rgba(30,30,40,0.94);
+      }
+
+      /* Glassmorphism effect */
+      .glass-card {
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+      
+      .dark .glass-card {
+          background: rgba(42, 42, 42, 0.7); /* From new */
+          border: 1px solid rgba(255, 255, 255, 0.1); /* From new */
+      }
+      
+      /* Note card styling (generic, can be used by NoteItem.tsx if desired) */
+      .note-card-global-style { /* Renamed to avoid conflict if NoteItem.tsx has its own specific .note-card */
+          transition: all 0.3s ease;
+          border-radius: 12px;
+          overflow: hidden;
+      }
+      
+      .note-card-global-style:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      
+      .dark .note-card-global-style:hover {
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+      
+      /* Button styling for global use if needed */
+      .btn-primary-global { /* Renamed */
+          background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+          transition: all 0.3s ease;
+          color: white; /* Added for text visibility */
+          padding: 0.5rem 1rem; /* Added basic padding */
+          border-radius: 0.5rem; /* Added border radius */
+      }
+      
+      .btn-primary-global:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 15px rgba(93, 92, 222, 0.4);
+      }
+      
+      /* Floating action button */
+      .fab-global { /* Renamed */
+          position: fixed;
+          bottom: 2rem;
+          right: 2rem;
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 20px rgba(93, 92, 222, 0.3);
+          z-index: 100; /* Ensure it's above other content, below mascot panel */
+          transition: all 0.3s ease;
+          color: white;
+      }
+      
+      .fab-global:hover {
+          transform: scale(1.1) rotate(90deg);
+      }
+      
+      /* Custom scrollbar styling - using new variable-based colors */
+      ::-webkit-scrollbar {
+          width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.05);
+      }
+      .dark ::-webkit-scrollbar-track { /* Combined from old and new */
+          background: rgba(255, 255, 255, 0.05);
+      }
+      ::-webkit-scrollbar-thumb {
+          background: var(--primary-light); /* From new */
+          border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+          background: var(--primary); /* From new */
+      }
+
+      /* Animation classes */
+      @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .animate-fadeIn {
+          animation: fadeIn 0.5s ease forwards;
+      }
+      
+      @keyframes float { /* Renamed to avoid conflict if NoteTaskApp has its own */
+          0% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+          100% { transform: translateY(0); }
+      }
+      
+      .animate-float {
+          animation: float 3s ease-in-out infinite;
+      }
+      
+      /* Pulse effect for notifications */
+      .pulse {
+          position: relative;
+      }
+      
+      .pulse::after {
+          content: '';
+          position: absolute;
+          top: -2px;
+          right: -2px;
+          width: 12px;
+          height: 12px;
+          background-color: var(--danger);
+          border-radius: 50%;
+          border: 2px solid var(--light-card-color);
+          animation: pulse-animation 1.5s infinite; /* Renamed keyframes */
+      }
+      
+      .dark .pulse::after {
+          border-color: var(--dark-card-color);
+      }
+      
+      @keyframes pulse-animation { /* Renamed keyframes */
+          0% { transform: scale(1); opacity: 1; }
+          70% { transform: scale(1.8); opacity: 0; }
+          100% { transform: scale(1); opacity: 0; }
+      }
+
+      /* Ensure prose styles from export templates don't conflict too much here */
+      /* Base prose for markdown content if not handled by Tailwind prose plugin */
+      .prose-sm-global { font-size: 14px; line-height: 1.6; }
+      .prose-sm-global h1, .prose-sm-global h2, .prose-sm-global h3 { margin-top: 1em; margin-bottom: 0.5em; font-weight: 600; }
+      .prose-sm-global p { margin-bottom: 0.8em; }
+      .prose-sm-global ul, .prose-sm-global ol { margin-bottom: 0.8em; padding-left: 1.2em; }
+      .dark .prose-sm-global { color: #cbd5e1; }
+      .dark .prose-sm-global h1, .dark .prose-sm-global h2, .dark .prose-sm-global h3 { color: #e2e8f0; }
+
+      /* Custom styling for .prose-sm used in the app for better readability */
+      .prose-sm {
+        font-size: 0.875rem; /* 14px - base for mobile */
+        line-height: 1.625;
+        /* Add other base prose styles if Tailwind Typography plugin is not used */
+      }
+      .prose-sm h1, .prose-sm h2, .prose-sm h3, .prose-sm h4 { margin-top: 1em; margin-bottom: 0.5em; font-weight: 600; }
+      .prose-sm p { margin-bottom: 0.8em; }
+      .prose-sm ul, .prose-sm ol { margin-bottom: 0.8em; padding-left: 1.5em; } /* Increased padding for lists */
+      .prose-sm blockquote { border-left: 3px solid #ccc; padding-left: 1em; margin-left: 0; font-style: italic; color: #555; }
+      .prose-sm code { background-color: #f0f0f0; padding: 0.1em 0.3em; border-radius: 3px; font-family: monospace; }
+      .prose-sm pre { background-color: #f0f0f0; padding: 0.8em; border-radius: 5px; overflow-x: auto; }
+      .prose-sm pre code { background-color: transparent; padding: 0; }
+      .prose-sm a { color: var(--primary); }
+      .prose-sm a:hover { text-decoration: underline; }
+
+
+      @media (min-width: 768px) { /* md breakpoint */
+        .prose-sm {
+            font-size: 0.9375rem; /* 15px */
+        }
+      }
+      @media (min-width: 1024px) { /* lg breakpoint */
+          .prose-sm {
+              font-size: 1rem; /* 16px */
+          }
+      }
+      /* Dark mode compatibility for custom .prose-sm */
+      /* Applied via .prose-dark class in components, or .dark .prose-sm if dark mode is on body/html */
+      .dark .prose-sm {
+        color: #cbd5e1; 
+      }
+      .dark .prose-sm h1, .dark .prose-sm h2, .dark .prose-sm h3, .dark .prose-sm h4 {
+        color: #e2e8f0;
+      }
+      .dark .prose-sm a { color: var(--primary-light); }
+      .dark .prose-sm blockquote { border-left-color: #555; color: #aaa; }
+      .dark .prose-sm code { background-color: #333; color: #ddd; }
+      .dark .prose-sm pre { background-color: #222; }
+
+
+      /* Ashval Mascot Styles from user's example */
+      @keyframes mascotFloat { 0% { transform: translateY(0);} 50% { transform: translateY(-14px);} 100% { transform: translateY(0);} }
+      .animate-mascot-float { animation: mascotFloat 3.2s ease-in-out infinite; }
+      
+      .bubble-arrow { 
+        position: absolute; 
+        bottom: 100%; 
+        right: 40px; 
+        width: 0; 
+        height: 0; 
+        border-left: 12px solid transparent; 
+        border-right: 12px solid transparent; 
+        border-bottom: 11px solid var(--mascot-bubble-arrow-border);
+      }
+      .dark .bubble-arrow {
+        border-bottom: 11px solid var(--mascot-bubble-arrow-border); /* Uses CSS var that changes with .dark */
+      }
+
+      /* Basic Mascot Panel Positioning - Tailwind will handle most styling */
+      .mascot-panel-base {
+        position: fixed;
+        z-index: 110; /* Above FAB */
+        right: 1.5rem; /* Equiv to right-6 */
+        /* Adjusted bottom to be higher than BottomNavBar + FAB */
+        bottom: calc(4rem + 4rem); /* BottomNavBar height (h-16 ~4rem) + FAB bottom (2rem) + FAB height (~2rem buffer) */
+      }
+      @media (min-width: 768px) { /* md: breakpoint */
+        .mascot-panel-base {
+          bottom: 6rem; /* Equiv to md:bottom-24 - FAB is usually hidden on md+ if BottomNav is */
+        }
+      }
+      .shadow-top {
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05), 0 -1px 3px rgba(0, 0, 0, 0.03);
+      }
+      .dark .shadow-top {
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15), 0 -1px 3px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.511.0",
+    "react-router-dom": "https://esm.sh/react-router-dom@6",
+    "@google/genai": "https://esm.sh/@google/genai@^1.1.0",
+    "chart.js/": "https://esm.sh/chart.js@^4.4.9/",
+    "react-chartjs-2": "https://esm.sh/react-chartjs-2@^5.2.0",
+    "react-do": "https://esm.sh/react-do@^1.1.6",
+    "pdfjs-dist": "https://esm.sh/pdfjs-dist@3.11.174",
+    "firebase/app": "https://esm.sh/firebase@^10.12.4/app",
+    "firebase/auth": "https://esm.sh/firebase@^10.12.4/auth",
+    "firebase/firestore": "https://esm.sh/firebase@^10.12.4/firestore",
+    "firebase/storage": "https://esm.sh/firebase@^10.12.4/storage",
+    "firebase-functions/": "https://esm.sh/firebase-functions@^6.3.2/",
+    "express": "https://esm.sh/express@^5.1.0",
+    "cors": "https://esm.sh/cors@^2.8.5",
+    "firebase/": "https://esm.sh/firebase@^11.8.1/"
+  }
+}
+</script>
+<script>
+  // Tailwind CSS JIT Configuration
+  tailwind.config = {
+      darkMode: 'class', // Matches React app's dark mode toggle
+      theme: {
+          extend: {
+              colors: {
+                  primary: {
+                      light: 'var(--primary-light)',
+                      DEFAULT: 'var(--primary)',
+                      dark: 'var(--primary-dark)'
+                  },
+                  secondary: { // Example, can be customized
+                      light: '#7BE495',
+                      DEFAULT: '#38B2AC',
+                      dark: '#2C9A94'
+                  },
+                  accent: { // Example, can be customized
+                      light: '#FFB17A',
+                      DEFAULT: 'var(--accent-color)',
+                      dark: '#F0823D'
+                  },
+                  // Example dark themes if needed directly in Tailwind, though React theme system is primary
+                  darkTheme1: { 
+                      bg: 'var(--dark-bg-color)',
+                      card: 'var(--dark-card-color)',
+                      accent: 'var(--dark-accent-var)' // Corrected variable name
+                  },
+              },
+              animation: {
+                  'fade-in': 'fadeIn 0.3s ease-in-out',
+                  'slide-in': 'slideIn 0.3s ease-in-out',
+                  'bounce-soft': 'bounceSoft 2s infinite',
+                  'mascot-float': 'mascotFloat 3.2s ease-in-out infinite' // Added mascot float animation
+              },
+              keyframes: {
+                  fadeIn: {
+                      '0%': { opacity: '0' },
+                      '100%': { opacity: '1' },
+                  },
+                  slideIn: {
+                      '0%': { transform: 'translateY(10px)', opacity: '0' },
+                      '100%': { transform: 'translateY(0)', opacity: '1' },
+                  },
+                  bounceSoft: {
+                      '0%, 100%': { transform: 'translateY(0)' },
+                      '50%': { transform: 'translateY(-5px)' },
+                  },
+                  mascotFloat: { /* Added mascot float keyframes */
+                    '0%': { transform: 'translateY(0px)'}, 
+                    '50%': { transform: 'translateY(-14px)'}, 
+                    '100%': { transform: 'translateY(0px)'}
+                  }
+              }
+          }
+      }
+  };
+</script>
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PWS4TPN8"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "AWS1",
+  "description": "A React-based application for managing notes and tasks with multiple themes. Helps users organize ideas and to-do lists efficiently.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}

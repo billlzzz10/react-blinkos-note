@@ -1,0 +1,22 @@
+
+{
+  "name": "ashval-note-assistant",
+  "version": "1.0.0",
+  "description": "Ashval & Note Assistant Application (Frontend-Only)",
+  "main": "dist/index.html",
+  "scripts": {
+    "start": "echo \"To run: 1. Start backend: 'cd backend && npm start' (or 'npm run dev'). 2. Build frontend: 'npm run build:frontend'. 3. Serve 'dist/' or open 'dist/index.html'.\"",
+    "build:frontend": "node build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.20.2",
+    "fs-extra": "^11.2.0" 
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
